@@ -5,7 +5,7 @@ import '../../shared/shayan_snack_bar.dart';
 import '../models/todo_list_view_model.dart';
 import '../repositories/todo_list_repository.dart';
 
-class TodoListController extends GetxController {
+class TodoDetailController extends GetxController {
   final TodoListRepository _repository = TodoListRepository();
   RxList<TodoListViewModel> todos = RxList();
   RxBool isLoading = true.obs, isRetryMode = false.obs;
