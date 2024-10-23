@@ -1,6 +1,7 @@
 import 'package:either_dart/either.dart';
 import 'package:get/get.dart';
 
+import '../../../infrastructure/route/route_names.dart';
 import '../../shared/shayan_snack_bar.dart';
 import '../models/todo_list_view_model.dart';
 import '../repositories/todo_list_repository.dart';
@@ -29,5 +30,16 @@ class TodoListController extends GetxController {
       isRetryMode.value = false;
       todos.value = todoList;
     });
+  }
+
+  void goToDetailPage({required int id}) =>
+      Get.toNamed(RouteNames.details, parameters: {'id': '$id'});
+
+  Future<void> goToAddPage() async {
+    final result = await Get.toNamed(RouteNames.addTodo);
+    if (result != null) {
+      final TodoListViewModel newTodo = TodoListViewModel.fromJson(result);
+      todos.add(newTodo);
+    }
   }
 }

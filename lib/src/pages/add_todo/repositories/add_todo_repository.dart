@@ -3,21 +3,24 @@ import 'dart:io';
 
 import 'package:either_dart/either.dart';
 import 'package:http/http.dart' as http;
+import 'package:my_love_todo_list/src/infrastructure/utils/utils.dart';
 
 import '../../../infrastructure/commons/repository_urls.dart';
-import '../models/todo_detail_view_model.dart';
+import '../models/todo_dto.dart';
 
-class TodoListRepository {
-  Future<Either<String, TodoListViewModel>> getTodoById(
-      {required int id}) async {
+class AddTodoRepository {
+  Future<Either<String, Map<String, dynamic>>> addTodo(
+      {required final TodoDto todoDto}) async {
     int? statusCode;
     try {
-      final http.Response response =
-          await http.get(RepositoryUrls.getTodoById(id: id));
-      final Map<String, dynamic> jsonData = jsonDecode(response.body);
-      final TodoListViewModel todos = TodoListViewModel.fromJson(jsonData);
+      final String body = jsonEncode(todoDto.toJson());
+      final http.Response response = await http.post(
+        RepositoryUrls.addTodo,
+        body: body,
+        headers: Utils.header,
+      );
       statusCode = response.statusCode;
-      return Right(todos);
+      return Right(json.decode(response.body));
     } on SocketException {
       return const Left('there is\'nt connect to the internet');
     } on HttpException {

@@ -9,7 +9,10 @@ class TodoDetailPage extends GetView<TodoDetailController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: SafeArea(child: _body())),
+      appBar: AppBar(backgroundColor: Colors.redAccent,
+        title: const Text('todo detail',),
+      ),
+      body: SafeArea(child: SafeArea(child: Obx(() => _body()))),
     );
   }
 
@@ -23,14 +26,21 @@ class TodoDetailPage extends GetView<TodoDetailController> {
         child: _retry(),
       );
     } else {
-      return Text('test');
+      return Center(
+        child: Column(
+          children: [
+            Text(controller.todo.value!.title),
+            Text(controller.todo.value!.completed.toString()),
+          ],
+        ),
+      );
     }
   }
 
   Widget _retry() => Center(
-    child: FloatingActionButton(
-      onPressed: controller.getTodos,
-      child: const Icon(Icons.refresh_outlined),
-    ),
-  );
+        child: FloatingActionButton(
+          onPressed: () => controller.getTodoById(id: controller.id!),
+          child: const Icon(Icons.refresh_outlined),
+        ),
+      );
 }

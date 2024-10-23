@@ -2,32 +2,38 @@ import 'package:either_dart/either.dart';
 import 'package:get/get.dart';
 
 import '../../shared/shayan_snack_bar.dart';
-import '../models/todo_list_view_model.dart';
+import '../models/todo_detail_view_model.dart';
 import '../repositories/todo_list_repository.dart';
 
 class TodoDetailController extends GetxController {
+  final int? id;
+
+  TodoDetailController(this.id);
+
   final TodoListRepository _repository = TodoListRepository();
-  RxList<TodoListViewModel> todos = RxList();
-  RxBool isLoading = true.obs, isRetryMode = false.obs;
+  final Rxn<TodoListViewModel> todo = Rxn();
+  final RxBool isLoading = true.obs, isRetryMode = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    getTodos();
+    if (id != null) {
+      getTodoById(id: id!);
+    }
   }
 
-  Future<void> getTodos() async {
-    final Either<String, List<TodoListViewModel>> resultOrException =
-        await _repository.getTodos();
+  Future<void> getTodoById({required int id}) async {
+    final Either<String, TodoListViewModel> resultOrException =
+        await _repository.getTodoById(id: id);
     isLoading.value = true;
     resultOrException.fold((exception) {
       isLoading.value = false;
       isRetryMode.value = true;
-      shayanShowSnackBar(title: 'todo list', message: exception);
-    }, (todoList) {
+      shayanShowSnackBar(title: 'todo details', message: exception);
+    }, (todoView) {
       isLoading.value = false;
       isRetryMode.value = false;
-      todos.value = todoList;
+      todo.value = todoView;
     });
   }
 }

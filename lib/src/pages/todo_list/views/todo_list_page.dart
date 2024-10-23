@@ -11,6 +11,11 @@ class TodoListPage extends GetView<TodoListController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: controller.goToAddPage,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SafeArea(child: SafeArea(child: Obx(() => _body()))),
     );
   }
@@ -38,7 +43,9 @@ class TodoListPage extends GetView<TodoListController> {
 
   Widget _todoList() => ListView.builder(
         itemCount: controller.todos.length,
-        itemBuilder: (context, index) =>
-            TodoItem(todo: controller.todos[index], onTap: () {}),
+        itemBuilder: (context, index) => TodoItem(
+            todo: controller.todos[index],
+            onTap: () =>
+                controller.goToDetailPage(id: controller.todos[index].id)),
       );
 }
