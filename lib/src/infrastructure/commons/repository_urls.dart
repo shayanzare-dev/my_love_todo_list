@@ -1,13 +1,13 @@
 class RepositoryUrls {
   RepositoryUrls._();
 
-  static const String _baseUrl = 'jsonplaceholder.typicode.com';
+  static const String _baseUrl = 'localhost:3000';
   static const String _todos = '/todos';
 
-  static final Uri getTodos = Uri.https(_baseUrl, _todos);
+  static final Uri getTodos = Uri.http(_baseUrl, _todos);
 
   static Uri getTodoById({required int id}) =>
-      Uri.https(_baseUrl, '$_todos/$id');
+      Uri.http(_baseUrl, '$_todos/$id');
 
-  static final Uri addTodo = Uri.https(_baseUrl, _todos);
+  static final Uri addTodo = Uri.http(_baseUrl, _todos);
 }
