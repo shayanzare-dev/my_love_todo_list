@@ -4,5 +4,8 @@ import '../controllers/edit_todo_controller.dart';
 
 class EditTodoBindings extends Bindings {
   @override
-  void dependencies() => Get.lazyPut(() => EditTodoController());
+  void dependencies() {
+    final int? id = int.tryParse(Get.parameters['id'] ?? '');
+    Get.lazyPut(() => EditTodoController(id));
+  }
 }

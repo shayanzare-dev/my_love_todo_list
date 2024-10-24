@@ -29,6 +29,8 @@ class TodoListPage extends GetView<TodoListController> {
       return Center(
         child: _retry(),
       );
+    } else if (controller.todos.isEmpty) {
+      return const Center(child: Text('empty todos'));
     } else {
       return _todoList();
     }
@@ -42,10 +44,15 @@ class TodoListPage extends GetView<TodoListController> {
       );
 
   Widget _todoList() => ListView.builder(
-        itemCount: controller.todos.length,
+    itemCount: controller.todos.length,
         itemBuilder: (context, index) => TodoItem(
-            todo: controller.todos[index],
-            onTap: () =>
-                controller.goToDetailPage(id: controller.todos[index].id)),
+          todo: controller.todos[index],
+          deleteOnTap: () =>
+              controller.deleteTodo(id: controller.todos[index].id),
+          detailsOnTap: () =>
+              controller.goToDetailPage(id: controller.todos[index].id),
+          editOnTap: () =>
+              controller.goToEditPage(id: controller.todos[index].id),
+        ),
       );
 }

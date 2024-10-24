@@ -8,6 +8,7 @@ class AddTodoPage extends GetView<AddTodoController> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      appBar: AppBar(),
       body: SafeArea(child: SafeArea(child: _body())),
     );
   }

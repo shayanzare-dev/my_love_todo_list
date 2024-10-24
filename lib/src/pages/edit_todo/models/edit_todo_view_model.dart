@@ -1,16 +1,16 @@
-class EditTodoViewMode {
+class EditTodoViewModel {
   final int id, userId;
   final String title;
   final bool completed;
 
-  const EditTodoViewMode(
+  const EditTodoViewModel(
       {required this.id,
       required this.userId,
       required this.title,
       required this.completed});
 
-  factory EditTodoViewMode.fromJson(final Map<String, dynamic> json) =>
-      EditTodoViewMode(
+  factory EditTodoViewModel.fromJson(final Map<String, dynamic> json) =>
+      EditTodoViewModel(
         id: json['id'],
         userId: json['userId'],
         title: json['title'],

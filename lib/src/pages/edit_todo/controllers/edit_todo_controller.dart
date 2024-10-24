@@ -1,21 +1,62 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:my_love_todo_list/src/pages/add_todo/models/todo_dto.dart';
-import 'package:my_love_todo_list/src/pages/shared/shayan_snack_bar.dart';
 
-import '../repositories/add_todo_repository.dart';
+import '../../shared/shayan_snack_bar.dart';
+import '../models/edit_todo_dto.dart';
+import '../models/edit_todo_view_model.dart';
+import '../repositories/edit_todo_repository.dart';
 
 class EditTodoController extends GetxController {
-  final AddTodoRepository _repository = AddTodoRepository();
+  final int? id;
+
+  EditTodoController(this.id);
+
+  final EditTodoRepository _repository = EditTodoRepository();
   final TextEditingController titleController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey();
-  RxBool isLoading = false.obs;
+  RxBool isLoading = false.obs, isRetryMode = false.obs,isEditLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    addTodo();
+    if (id != null) {
+      getTodoById(id: id!);
+    }
+  }
+
+  Future<void> getTodoById({required int id}) async {
+    Either<String, EditTodoViewModel> resultOrException =
+        await _repository.getTodoById(id: id);
+    isLoading.value = true;
+    resultOrException.fold(
+      (String exception) {
+        isLoading.value = false;
+        isRetryMode.value = true;
+        shayanShowSnackBar(title: 'edit todo', message: exception);
+      },
+      (EditTodoViewModel todo) {
+        isLoading.value = false;
+        isRetryMode.value = false;
+        titleController.text = todo.title;
+      },
+    );
+  }
+
+  Future<void> editTodo({required int id}) async {
+    if (!(formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+    isEditLoading.value = true;
+    final EditTodoDto editTodoDto =
+        EditTodoDto(userId: 1, title: titleController.text, completed: true);
+    Either<String, Map<String, dynamic>> editTodo =
+        await _repository.editTodo(id: id, editTodoDto: editTodoDto);
+    isEditLoading.value = false;
+    editTodo.fold(
+      (exception) => shayanShowSnackBar(title: 'edit todo', message: exception),
+      (newTodo) => Get.back(result: newTodo),
+    );
   }
 
   @override
@@ -27,41 +68,8 @@ class EditTodoController extends GetxController {
   String? validate(String? value) {
     if (value?.isNotEmpty ?? false) {
       return null;
+    } else {
+      return 'required';
     }
-    return 'required';
-  }
-
-  //
-  // Future<void> getTodos() async {
-  //   final Either<String, List<TodoListViewModel>> resultOrException =
-  //       await _repository.getTodos();
-  //   isLoading.value = true;
-  //   resultOrException.fold((exception) {
-  //     isLoading.value = false;
-  //     isRetryMode.value = true;
-  //     shayanShowSnackBar(title: 'todo list', message: exception);
-  //   }, (todoList) {
-  //     isLoading.value = false;
-  //     isRetryMode.value = false;
-  //     todos.value = todoList;
-  //   });
-  // }
-
-  Future<void> addTodo() async {
-    if (!(formKey.currentState?.validate() ?? false)) {
-      return;
-    }
-    final TodoDto todoDto =
-        TodoDto(userId: 1, title: titleController.text, completed: true);
-    final Either<String, Map<String, dynamic>> resultOrException =
-        await _repository.addTodo(todoDto: todoDto);
-    isLoading.value = true;
-    resultOrException.fold((exception) {
-      isLoading.value = true;
-      shayanShowSnackBar(title: 'add todo', message: exception);
-    }, (Map<String, dynamic> todoDto) {
-      isLoading.value = false;
-      Get.back(result: todoDto);
-    });
   }
 }

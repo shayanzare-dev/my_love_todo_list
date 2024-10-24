@@ -1,9 +1,8 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:my_love_todo_list/src/pages/add_todo/models/todo_dto.dart';
-import 'package:my_love_todo_list/src/pages/shared/shayan_snack_bar.dart';
-
+import '../../shared/shayan_snack_bar.dart';
+import '../models/add_todo_dto.dart';
 import '../repositories/add_todo_repository.dart';
 
 class AddTodoController extends GetxController {
@@ -51,8 +50,8 @@ class AddTodoController extends GetxController {
     if (!(formKey.currentState?.validate() ?? false)) {
       return;
     }
-    final TodoDto todoDto =
-        TodoDto(userId: 1, title: titleController.text, completed: true);
+    final AddTodoDto todoDto =
+    AddTodoDto(userId: 1, title: titleController.text, completed: true);
     final Either<String, Map<String, dynamic>> resultOrException =
         await _repository.addTodo(todoDto: todoDto);
     isLoading.value = true;

@@ -32,8 +32,30 @@ class TodoListController extends GetxController {
     });
   }
 
+  Future<void> deleteTodo({required int id}) async {
+    final Either<String, bool> resultOrException =
+        await _repository.deleteTodo(id: id);
+    resultOrException.fold((exception) {
+      shayanShowSnackBar(title: 'delete todo', message: exception);
+    }, (right) {
+      final int index = todos.indexWhere((todo) => todo.id == id);
+      final bool isTodoFound = index != -1;
+      if (isTodoFound) {
+        todos.removeAt(index);
+      }
+    });
+  }
+
   void goToDetailPage({required int id}) =>
       Get.toNamed(RouteNames.details, parameters: {'id': '$id'});
+
+  Future<void> goToEditPage({required int id}) async {
+    final result =
+        await Get.toNamed(RouteNames.editTodo, parameters: {'id': '$id'});
+    if (result != null && result is Map<String, dynamic>) {
+      todos.add(TodoListViewModel.fromJson(result));
+    }
+  }
 
   Future<void> goToAddPage() async {
     final result = await Get.toNamed(RouteNames.addTodo);

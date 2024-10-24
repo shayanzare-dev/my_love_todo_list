@@ -10,4 +10,7 @@ class RepositoryUrls {
       Uri.http(_baseUrl, '$_todos/$id');
 
   static final Uri addTodo = Uri.http(_baseUrl, _todos);
+
+  static Uri editTodo({required int id}) => Uri.http(_baseUrl, '$_todos/$id');
+  static Uri removeTodo({required int id}) => Uri.http(_baseUrl, '$_todos/$id');
 }

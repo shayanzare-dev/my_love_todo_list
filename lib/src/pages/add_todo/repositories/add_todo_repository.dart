@@ -6,11 +6,11 @@ import 'package:http/http.dart' as http;
 import 'package:my_love_todo_list/src/infrastructure/utils/utils.dart';
 
 import '../../../infrastructure/commons/repository_urls.dart';
-import '../models/todo_dto.dart';
+import '../models/add_todo_dto.dart';
 
 class AddTodoRepository {
   Future<Either<String, Map<String, dynamic>>> addTodo(
-      {required final TodoDto todoDto}) async {
+      {required final AddTodoDto todoDto}) async {
     int? statusCode;
     try {
       final String body = jsonEncode(todoDto.toJson());
